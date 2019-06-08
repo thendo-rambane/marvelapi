@@ -1,11 +1,10 @@
-"""Authenticator.
+"""authenticator.
 
-This module allows the user to easily build authentication string that is used 
-in the request string for the API.
+This module implements the Authenticator class which allows the user to easily
+build authentication string that is used in the request string for the API.
 
-The class Authenticator accepts two methods:
+The class Authenticator has one methods:
     *get_auth_string() - returns the authentic string
-    *authenticated() - returns whether the user is authenticated or not
 
 """
 
@@ -22,8 +21,8 @@ class Authenticator():
     """Class to represent Authenticator object.
 
     Parameters:
-            public_key: The users given public key(given by Marvel)
-            private_key: The users given private key(given by Marvel)
+        public_key: The users given public key(given by Marvel)
+        private_key: The users given private key(given by Marvel)
 
     """
 
