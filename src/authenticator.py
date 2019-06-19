@@ -18,15 +18,9 @@ PUBLIC_KEY = '9b6d7545e698ec76a8673df57089edbc'
 PRIVATE_KEY = 'd55e975ae3c3a0e3041d7f8688e126c3f0d517dc'
 
 class Authenticator():
-    """Class to represent Authenticator object.
+    """Class to represent Authenticator object."""
 
-    Parameters:
-        public_key: The users given public key(given by Marvel)
-        private_key: The users given private key(given by Marvel)
-
-    """
-
-    def __init__(self, public_key: str, private_key: str):
+    def __init__(self, public_key: str, private_key: str, time_stamp = None):
         """Constructor.
 
         Initiates the private and private keys.
@@ -36,6 +30,7 @@ class Authenticator():
             private_key: The users given private key(given by Marvel)
 
         """
+        self.__time = time_stamp
         self.__pub_key = public_key
         self.__pri_key = private_key
 
@@ -53,13 +48,7 @@ class Authenticator():
             Authentication string.
 
         """
-        today = datetime.datetime.today()
-        date = ''.join(str(today.date()).split('-'))
-        time = ''.join(
-            str(today.time()).split('.')[0].split(':'))
-
-        
-        time_stamp = date + time
+        time_stamp = self.__get_date_time()
         string = time_stamp + self.__pri_key + self.__pub_key
         
         encoded_string = string.encode(encoding='UTF-8', errors='strict')
@@ -70,3 +59,13 @@ class Authenticator():
         auth_string += '&apikey='+self.__pub_key
         auth_string += '&hash='+hasher.hexdigest()
         return auth_string
+
+    def __get_date_time(self):
+        if self.__time == None:
+            today = datetime.datetime.today()
+            date = ''.join(str(today.date()).split('-'))
+            time = ''.join(
+                str(today.time()).split('.')[0].split(':'))
+            return date + time
+        else:
+            return self.__time
