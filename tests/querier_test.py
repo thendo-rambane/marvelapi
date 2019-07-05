@@ -18,11 +18,14 @@ class TestQuerier(unittest.TestCase):
         self.public_documentation = json.load(open(test_data_file))
 
     def test_get_querier_string(self):
-        pass
+        q = Querier('characters', self.auth)
+        query_string = q.get_query_string(1011334)
+        expected_string = 'https://gateway.marvel.com/v1/public/characters/' +\
+            '1011334?ts=1&apikey=1234&hash=ffd275c5130566a2916217b101f26150'
+        self.assertEqual(query_string, expected_string)
 
     def test_parameter_verification(self):
         q = Querier('characters', self.auth)
-        q.load_values(self.public_documentation)
         possible_values = q.get_possible_lists()
         self.assertEqual(possible_values['name']['type'], str)
         self.assertEqual(possible_values['nameStartsWith']['type'], str)
@@ -34,7 +37,6 @@ class TestQuerier(unittest.TestCase):
     def test_querier_add_parameter_attribute_error(self):
 
         q = Querier('comics', self.auth)
-        q.load_values(self.public_documentation)
         list_of_possible_parameters_and_their_types = q.get_possible_lists()\
             .keys()
 
@@ -56,7 +58,6 @@ class TestQuerier(unittest.TestCase):
     def test_querier_add_parameter_given_search_value_type_error(self):
         # Check that
         q = Querier('comics', self.auth)
-        q.load_values(self.public_documentation)
         # list_of_possible_parameters_and_their_types = q.get_possible_lists()
 
         with self.assertRaises(TypeError) as error:
