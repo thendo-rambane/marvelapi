@@ -43,7 +43,7 @@ class Querier():
         self.__query_string = ''
         self.__possible_values = {}
 
-        # self.__load_possible_entity_values()
+        self.__load_possible_entity_values()
 
     def __check_type(self, parameter, value, type_expected, msg=None):
         """Verify that value is of expected type"""
@@ -158,7 +158,32 @@ class Querier():
             item_id - if this parameter is given an id based endpoint is
                 generated.
         """
-        pass
+        if item_id:
+            self.__query_string = '/' + str(item_id) + '?'
+        else:
+            edited = False
+            query_string = ''
+            for key, value in self.parameters.items():
+                if isinstance(value, list):
+                    if edited:
+                        query_string += '&'
+                    query_string += str(key) + '=' + \
+                        ','.join([item for item in value])
+                    edited = True
+                elif key in ['limit', 'offset']:
+                    if edited:
+                        query_string += '&'
+                    query_string += str(key) + '=' + str(value)
+                    edited = True
+                else:
+                    if edited:
+                        query_string += '&'
+                    query_string += str(key) + '=' + value
+                    edited = True
+            if edited:
+                query_string += '&'
+
+            self.__query_string = '?' + query_string
 
     def __load_possible_entity_values(self, test_values=None):
         if not test_values:
@@ -205,13 +230,21 @@ class Querier():
 
         self.__possible_values = entity_values
 
-    def load_values(self, values):
+    def load_values(self, values=None):
         self.__load_possible_entity_values(values)
 
     def add_parameters(self, **kwarg):
         """Add search parameter using key word arguments"""
-        for key, value in kwarg.items():
-            self.__add_parameter(key, value)
+        if not len(kwarg):
+            possible_values = self.get_possible_lists()
+            attr_error_msg = \
+                'No search parameters given' +\
+                ' try one of the following {!r}.'
+            msg = attr_error_msg.format(possible_values.keys())
+            raise(AttributeError(msg))
+        else:
+            for key, value in kwarg.items():
+                self.__add_parameter(key, value)
 
     def __add_parameter(self, parameter_name: str, value):
         """Add search parameters and values"""
@@ -245,5 +278,6 @@ class Querier():
 
         """
         self.__build_query_string(item_id)
-        return 'https://gateway.marvel.com/v1/public/' + self.__query_string \
-            + self.__authenticator.get_auth_string()
+
+        return 'https://gateway.marvel.com/v1/public/' + self.entity +\
+            self.__query_string + self.__authenticator.get_auth_string()
