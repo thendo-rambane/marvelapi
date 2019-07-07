@@ -58,7 +58,6 @@ class TestQuerier(unittest.TestCase):
     def test_querier_add_parameter_given_search_value_type_error(self):
         q = Querier('comics', self.auth)
 
-        
         with self.assertRaises(TypeError) as error:
             q.add_parameters(title=3)
         error_msg = str(error.exception)

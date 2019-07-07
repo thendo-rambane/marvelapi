@@ -43,8 +43,6 @@ class Querier():
         self.__query_string = ''
         self.__possible_values = {}
 
-        self.__load_possible_entity_values()
-
     def __check_type(self, parameter, value, type_expected, msg=None):
         """Verify that value is of expected type"""
 
@@ -93,6 +91,7 @@ class Querier():
 
     def __check_parameter(self, parameter_name: str, value):
         """Verify that given search parameter meets specification"""
+        self.__load_possible_entity_values()
 
         possible_values = self.get_possible_lists()
         # Check if given parameter name is an accepted search parameter if not
@@ -111,13 +110,13 @@ class Querier():
             if 'possible_values' in current_parameter.keys():
                 if isinstance(current_parameter['possible_values'], list):
                     for possible_value in value:
-                        if possible_value not in current_parameter[
-                                'possible_values']:
+                        if possible_value not in \
+                                current_parameter['possible_values']:
                             value_error_msg = \
                                 '{!r} given for parameter {!r},' +\
                                 ' expected value should be in {!r}.'
                             msg = value_error_msg.format(
-                                value,
+                                possible_value,
                                 parameter_name,
                                 current_parameter['possible_values'])
                             raise ValueError(msg)
@@ -263,6 +262,7 @@ class Querier():
             self.parameters[parameter_name] = value
 
     def get_possible_lists(self):
+        self.__load_possible_entity_values()
         return self.__possible_values[self.entity]
 
     def get_query_string(self, item_id=None) -> str:
