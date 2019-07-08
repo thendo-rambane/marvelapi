@@ -5,13 +5,13 @@ import os
 import unittest
 import os.path as path
 
-from src import Entity
-from src import Authenticator
+from marvelapi import Entity
+from marvelapi import Authenticator
 
 
 class TestEntities(unittest.TestCase):
     def setUp(self):
-        test_path = path.abspath(path.curdir)+'/tests/'
+        test_path = path.abspath(path.curdir)+'/marvelapi/tests/'
         test_data_files = os.listdir(path=test_path+'test_data/')
         self.test_json = {}
         for test_file in test_data_files:

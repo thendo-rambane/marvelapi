@@ -3,7 +3,7 @@ import os
 import os.path as path
 import unittest
 
-from src import Authenticator, Querier
+from marvelapi import Authenticator, Querier
 
 
 class TestQuerier(unittest.TestCase):
@@ -13,7 +13,7 @@ class TestQuerier(unittest.TestCase):
         TIME_STAMP = '1'
         self.auth = Authenticator(PUBLIC_KEY, PRIVATE_KEY, TIME_STAMP)
 
-        test_path = path.abspath(path.curdir)+'/tests/'
+        test_path = path.abspath(path.curdir)+'/marvelapi/tests/'
         test_data_file = test_path+'test_data/public_docs.json'
         self.public_documentation = json.load(open(test_data_file))
 
