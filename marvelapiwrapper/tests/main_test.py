@@ -4,8 +4,8 @@ import os
 import unittest
 import os.path as path
 
-from marvelapi import MarvelAPI
-from marvelapi import Entity
+from marvelapiwrapper.marvel import MarvelAPI
+from marvelapiwrapper.entity import Entity
 
 PUBLIC_KEY = '*'
 PRIVATE_KEY = '*'
@@ -13,7 +13,7 @@ PRIVATE_KEY = '*'
 
 class TestAPI(unittest.TestCase):
     def setUp(self):
-        test_path = path.abspath(path.curdir)+'/marvelapi/tests/'
+        test_path = path.abspath(path.curdir)+'/marvelapiwrapper/tests/'
         test_data_files = os.listdir(path=test_path+'test_data/')
         self.test_json = {}
         for test_file in test_data_files:
@@ -46,7 +46,7 @@ class TestAPI(unittest.TestCase):
             if character['name'] == '3-D Man':
                 expected_entity = Entity('characters', character)
                 break
-        
+
         self.assertEqual(test_entity.get('name'), expected_entity.get('name'))
         self.assertEqual(test_entity.get('id'), expected_entity.get('id'))
         self.assertEqual(test_entity.get('modified'),

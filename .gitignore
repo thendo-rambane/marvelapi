@@ -119,5 +119,5 @@ About
 
 .vscode/
 Keys
-# *test*
-# doc/
+a.py
+get_search_parameters.py
