@@ -8,9 +8,6 @@ from .authenticator import Authenticator as Auth
 from .entity import Entity
 from .querier import Querier
 
-PUBLIC_KEY = '9b6d7545e698ec76a8673df57089edbc'
-PRIVATE_KEY = 'd55e975ae3c3a0e3041d7f8688e126c3f0d517dc'
-
 
 class Error(Exception):
     pass
@@ -81,4 +78,3 @@ class MarvelAPI():
 
     def get_stories_where(self, **kwargs):
         return self.__get('stories', **kwargs)
-
