@@ -1,5 +1,5 @@
 import unittest
-from marvelapi import Authenticator
+from marvelapiwrapper.authenticator import Authenticator
 
 
 class TestAuthenticator(unittest.TestCase):
