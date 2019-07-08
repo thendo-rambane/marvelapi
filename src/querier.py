@@ -43,8 +43,6 @@ class Querier():
         self.__query_string = ''
         self.__possible_values = {}
 
-        # self.__load_possible_entity_values()
-
     def __check_type(self, parameter, value, type_expected, msg=None):
         """Verify that value is of expected type"""
 
@@ -93,6 +91,7 @@ class Querier():
 
     def __check_parameter(self, parameter_name: str, value):
         """Verify that given search parameter meets specification"""
+        self.__load_possible_entity_values()
 
         possible_values = self.get_possible_lists()
         # Check if given parameter name is an accepted search parameter if not
@@ -111,13 +110,13 @@ class Querier():
             if 'possible_values' in current_parameter.keys():
                 if isinstance(current_parameter['possible_values'], list):
                     for possible_value in value:
-                        if possible_value not in current_parameter[
-                                'possible_values']:
+                        if possible_value not in \
+                                current_parameter['possible_values']:
                             value_error_msg = \
                                 '{!r} given for parameter {!r},' +\
                                 ' expected value should be in {!r}.'
                             msg = value_error_msg.format(
-                                value,
+                                possible_value,
                                 parameter_name,
                                 current_parameter['possible_values'])
                             raise ValueError(msg)
@@ -158,7 +157,32 @@ class Querier():
             item_id - if this parameter is given an id based endpoint is
                 generated.
         """
-        pass
+        if item_id:
+            self.__query_string = '/' + str(item_id) + '?'
+        else:
+            edited = False
+            query_string = ''
+            for key, value in self.parameters.items():
+                if isinstance(value, list):
+                    if edited:
+                        query_string += '&'
+                    query_string += str(key) + '=' + \
+                        ','.join([item for item in value])
+                    edited = True
+                elif key in ['limit', 'offset']:
+                    if edited:
+                        query_string += '&'
+                    query_string += str(key) + '=' + str(value)
+                    edited = True
+                else:
+                    if edited:
+                        query_string += '&'
+                    query_string += str(key) + '=' + value
+                    edited = True
+            if edited:
+                query_string += '&'
+
+            self.__query_string = '?' + query_string
 
     def __load_possible_entity_values(self, test_values=None):
         if not test_values:
@@ -205,13 +229,21 @@ class Querier():
 
         self.__possible_values = entity_values
 
-    def load_values(self, values):
+    def load_values(self, values=None):
         self.__load_possible_entity_values(values)
 
     def add_parameters(self, **kwarg):
         """Add search parameter using key word arguments"""
-        for key, value in kwarg.items():
-            self.__add_parameter(key, value)
+        if not len(kwarg):
+            possible_values = self.get_possible_lists()
+            attr_error_msg = \
+                'No search parameters given' +\
+                ' try one of the following {!r}.'
+            msg = attr_error_msg.format(possible_values.keys())
+            raise(AttributeError(msg))
+        else:
+            for key, value in kwarg.items():
+                self.__add_parameter(key, value)
 
     def __add_parameter(self, parameter_name: str, value):
         """Add search parameters and values"""
@@ -230,6 +262,7 @@ class Querier():
             self.parameters[parameter_name] = value
 
     def get_possible_lists(self):
+        self.__load_possible_entity_values()
         return self.__possible_values[self.entity]
 
     def get_query_string(self, item_id=None) -> str:
@@ -245,5 +278,6 @@ class Querier():
 
         """
         self.__build_query_string(item_id)
-        return 'https://gateway.marvel.com/v1/public/' + self.__query_string \
-            + self.__authenticator.get_auth_string()
+
+        return 'https://gateway.marvel.com/v1/public/' + self.entity +\
+            self.__query_string + self.__authenticator.get_auth_string()

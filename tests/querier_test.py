@@ -18,11 +18,14 @@ class TestQuerier(unittest.TestCase):
         self.public_documentation = json.load(open(test_data_file))
 
     def test_get_querier_string(self):
-        pass
+        q = Querier('characters', self.auth)
+        query_string = q.get_query_string(1011334)
+        expected_string = 'https://gateway.marvel.com/v1/public/characters/' +\
+            '1011334?ts=1&apikey=1234&hash=ffd275c5130566a2916217b101f26150'
+        self.assertEqual(query_string, expected_string)
 
     def test_parameter_verification(self):
         q = Querier('characters', self.auth)
-        q.load_values(self.public_documentation)
         possible_values = q.get_possible_lists()
         self.assertEqual(possible_values['name']['type'], str)
         self.assertEqual(possible_values['nameStartsWith']['type'], str)
@@ -34,7 +37,6 @@ class TestQuerier(unittest.TestCase):
     def test_querier_add_parameter_attribute_error(self):
 
         q = Querier('comics', self.auth)
-        q.load_values(self.public_documentation)
         list_of_possible_parameters_and_their_types = q.get_possible_lists()\
             .keys()
 
@@ -54,10 +56,7 @@ class TestQuerier(unittest.TestCase):
         self.assertEqual(error_msg, msg)
 
     def test_querier_add_parameter_given_search_value_type_error(self):
-        # Check that
         q = Querier('comics', self.auth)
-        q.load_values(self.public_documentation)
-        # list_of_possible_parameters_and_their_types = q.get_possible_lists()
 
         with self.assertRaises(TypeError) as error:
             q.add_parameters(title=3)
@@ -73,16 +72,65 @@ class TestQuerier(unittest.TestCase):
 
         with self.assertRaises(TypeError) as error:
             q.add_parameters(series=3020)
+        error_msg = str(error.exception)
+        msg = 'Value {!r} given for parameter {!r} is of type {!r}, {!r}' +\
+            ' expected.'
+        expected_error_msg = msg.format(
+            3020,
+            'series',
+            type(3020),
+            list
+        )
+        self.assertEqual(error_msg, expected_error_msg)
+
         with self.assertRaises(TypeError) as error:
-            q.add_parameters(series=['3020'])
+            q.add_parameters(series=['3020', 1520])
+        error_msg = str(error.exception)
+        msg = 'In value list for parameter{!r},' +\
+            ' {!r} is of type {!r}, {!r} expected.'
+        expected_error_msg = msg.format(
+            'series',
+            '3020',
+            type('3020'),
+            int
+        )
+        self.assertEqual(error_msg, expected_error_msg)
+
         with self.assertRaises(ValueError) as error:
             q.add_parameters(limit=200)
-        with self.assertRaises(TypeError) as error:
-            q.add_parameters(orderBy=[200])
+        error_msg = str(error.exception)
+        msg = '{!r} given for parameter {!r},' +\
+            ' value between {!r} expected.'
+        expected_error_msg = msg.format(
+            200,
+            'limit',
+            (1, 100)
+        )
+        self.assertEqual(error_msg, expected_error_msg)
+
         with self.assertRaises(ValueError) as error:
             q.add_parameters(orderBy=['value'])
-        # print(error.exception)
+        error_msg = str(error.exception)
+        msg = '{!r} given for parameter {!r},' +\
+            ' expected value should be in {!r}.'
+        expected_error_msg = msg.format(
+            'value',
+            'orderBy',
+            [
+                'focDate',
+                'onsaleDate',
+                'title',
+                'issueNumber',
+                'modified',
+                '-focDate',
+                '-onsaleDate',
+                '-title',
+                '-issueNumber',
+                '-modified'
+            ]
+        )
+        self.assertEqual(error_msg, expected_error_msg)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

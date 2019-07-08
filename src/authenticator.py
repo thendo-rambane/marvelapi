@@ -13,14 +13,13 @@ import hashlib
 import random
 
 
-#TODO delete these before release
-PUBLIC_KEY = '9b6d7545e698ec76a8673df57089edbc'
-PRIVATE_KEY = 'd55e975ae3c3a0e3041d7f8688e126c3f0d517dc'
+# TODO delete these before release
+
 
 class Authenticator():
     """Class to represent Authenticator object."""
 
-    def __init__(self, public_key: str, private_key: str, time_stamp = None):
+    def __init__(self, public_key: str, private_key: str, time_stamp=None):
         """Constructor.
 
         Initiates the private and private keys.
@@ -50,7 +49,7 @@ class Authenticator():
         """
         time_stamp = self.__get_date_time()
         string = time_stamp + self.__pri_key + self.__pub_key
-        
+
         encoded_string = string.encode(encoding='UTF-8', errors='strict')
         hasher = hashlib.md5()
         hasher.update(encoded_string)
@@ -61,7 +60,7 @@ class Authenticator():
         return auth_string
 
     def __get_date_time(self):
-        if self.__time == None:
+        if self.__time is None:
             today = datetime.datetime.today()
             date = ''.join(str(today.date()).split('-'))
             time = ''.join(
