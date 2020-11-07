@@ -11,6 +11,12 @@ import json
 
 
 class Entity():
+    """A representation of the different entities a result from api
+    request can be.
+    
+    Uses meta-programming to create the attributes on the fly
+
+    """
     def __init__(self, entity_type: str, attributes: dict):
         self.__dict__ = {}
         self.entity_type = entity_type

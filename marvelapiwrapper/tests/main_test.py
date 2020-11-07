@@ -3,12 +3,15 @@ import json
 import os
 import unittest
 import os.path as path
+from dotenv import load_dotenv
 
 from marvelapiwrapper.marvel import MarvelAPI
 from marvelapiwrapper.entity import Entity
 
-PUBLIC_KEY = '*'
-PRIVATE_KEY = '*'
+load_dotenv()
+
+PUBLIC_KEY = os.getenv("PUBLIC_KEY")
+PRIVATE_KEY = os.getenv("PRIVATE_KEY")
 
 
 class TestAPI(unittest.TestCase):

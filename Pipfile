@@ -5,16 +5,14 @@ verify_ssl = true
 
 [dev-packages]
 pylint = "*"
-pydocstyle = "*"
-nose = "*"
 pytest = "*"
-autopep8 = "*"
-pep8 = "*"
-black = "*"
+neovim = "*"
+jedi = "*"
 
 [packages]
 bs4 = "*"
 requests = "*"
+python-dotenv = "*"
 
 [requires]
-python_version = "3.6"
+python_version = "3"

@@ -38,7 +38,7 @@ class Authenticator():
 
         According to the spec at developer.marvel.com build an authentication
         string by:
-            Choosing a timestamp then using md5 hash the timestamp private key
+            Choosing a timestamp then using md5, hash the timestamp private key
             and public key.
 
             Build a string by concatinating timestamp + public key + hash
