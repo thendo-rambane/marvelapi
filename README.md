@@ -4,8 +4,8 @@ Rename example.env to .env and fill in the required keys.
 
 Marvel Api provide a wrapper for the [Marvel API](https://developer.marvel.com).
 You might find it most useful for tasks involving fetching and using elements from
-this api without having to explicitly write out the request. ::
-
+this api without having to explicitly write out the request. 
+```python
     #!/usr/bin/python3
 
     from marvelapi import MarvelAPI
@@ -21,6 +21,7 @@ this api without having to explicitly write out the request. ::
     characters = API.get_characters_where(name="spider-man")
     for character in characters:
         print(character.get('description'))
+ ```
 
 ## Entities
 
